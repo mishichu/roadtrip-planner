@@ -1,0 +1,16 @@
+{% extends 'base2.html' %}
+
+{% block user-info %}
+<div> Hi, {{request.user.first_name}}!
+    <button><a href="{% url '' %}" style="color:white;text-decoration:none;">home</a></button>
+    <button><a href="{% url 'friends' %}" style="color:white;text-decoration:none;">find friends</a></button>
+    <button><a href="{% url 'profile' request.user.id %}" style="color:white;text-decoration:none;">my profile</a></button>
+    <button><a href="{% url 'logout'%}" style="color:white;text-decoration:none;">logout</a></button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="error" class="error">{{error}} </div>
+<br>
+Use the navigation bar to navigate to another page.
+{% endblock %}

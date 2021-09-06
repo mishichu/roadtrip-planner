@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	    {% load static %}
+	<link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css?family=Amatic+SC' rel='stylesheet'>
+    <style>
+.container {
+    position: relative;
+    text-align: right; 
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    width: 100%;
+}
+
+.line {
+    border-top: 3px dashed #039687;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    z-index: -2;  
+}
+</style>
+</head>
+<body>
+    <div class="user-info">
+    </div>
+
+    <div class="page-name">
+    <p class="big-heading">welcome to road trip planner</p>
+    </div>
+        
+    <div class="content">
+        <form method="post" action="{% url 'register' %}">
+            <table>
+                {% for field in form.visible_fields %}
+                    <tr>
+                        <td>{{field.label_tag}}</td>
+                        <td>{{field}}</td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% csrf_token %}
+            <button id="id_register_button" type="submit">Register</button>
+        </form>
+	{{ form.media }}
+    
+        {% for error in form.non_field_errors %}
+            <p class="errorlist">
+                {{ error }}
+            </p>
+        {% endfor %}
+        <p style="font-family:'Amatic SC'">Already have an account? <a href="{% url 'login' %}">Login Here</a> </p>
+    </div>
+<div class='container'>
+    <img src="/media/car.png" style="width:100px;height:100px;position: relative;"/> 
+    <div class='line'></div>
+</div>
+</body>
+</html>

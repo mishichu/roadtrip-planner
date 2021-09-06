@@ -1,0 +1,114 @@
+body {
+  background-color: #ddead3;
+  color: #45818e;
+}
+#map {
+    height: 90%;
+    width: 50%;
+    margin: 20px;
+  }
+  .header2 {
+    font-size: xx-large;
+    font-family: 'Amatic SC';
+    text-align: center;
+    padding: 25px 50px;
+}
+.save-button-wrp {
+  margin:0px;
+  display: flex;
+  justify-content: center;
+}
+.planner-wrp {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin-top: 50px;
+}
+.planner {
+    width:50%;
+    margin: 20px;
+    font-size: 2vw;
+    
+}
+.button-wrp {
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-end;
+  margin-right: 7.5%;
+}
+.next-button {
+  font-size: 2vw;
+  max-width: 300px;
+  margin: 5px;
+}
+table {
+  height: 100%;
+}
+.planner-table {
+  font-family: 'Amatic SC';
+}
+.note-div {
+  margin-bottom: 1em;
+}
+textarea {
+  width: 100%;
+  max-width: 100%;
+}
+.marker-note {
+  background-color: #fff2cc;
+  height: 20em;
+  width: 20em;
+  padding: 5% 7.5% 5% 7.5%;
+  font-family: 'Amatic SC';
+  font-size: 2vw;
+
+}
+.marker-note button {
+    width: 100%;
+}
+.friends-note {
+  background-color: #d9d2e9;
+  height: 18em;
+  width: 18em;
+  padding: 10% 7.5% 5% 7.5%;
+  font-family: 'Amatic SC';
+  font-size: 2vw;
+  display: flex;
+  flex-direction: column;
+}
+.review-note {
+  background-color: #f4cccc;
+  height: 18em;
+  width: 18em;
+  padding: 10% 7.5% 5% 7.5%;
+  font-family: 'Amatic SC';
+  font-size: 2vw;
+  display: flex;
+  flex-direction: column;
+}
+input {
+  font-size: 1.5vw;
+}
+td {
+  padding: 0.75em;
+}
+
+.wizard {
+    display: flex;
+    flex-direction: column;
+    height:100%;
+    width: 100%;
+}
+
+  html,
+body {
+  font-family: Helvetica;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.goto-location {
+    margin: 5em;
+    font-size: 1vw;
+    min-height: 15px;
+}

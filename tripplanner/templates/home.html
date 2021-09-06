@@ -1,0 +1,52 @@
+{% extends "base2.html" %}
+
+
+
+{% block user-info %}
+<style>
+    .container {
+        position: relative;
+        text-align: right; 
+        position: absolute;
+        bottom: 0px;
+        right: 10px;
+        width: 100%;
+    }
+    
+    .line {
+        border-top: 3px dashed #039687;
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        z-index: -2;  
+    }
+    </style>
+
+<div> Hi, {{request.user.first_name}}!
+    <button><a href="{% url '' %}" style="color:white;text-decoration:none;">home</a></button>
+    <button><a href="{% url 'friends' %}" style="color:white;text-decoration:none;">find friends</a></button>
+    <button><a href="{% url 'profile' request.user.id %}" style="color:white;text-decoration:none;">my profile</a></button>
+    <button><a href="{% url 'logout'%}" style="color:white;text-decoration:none;">logout</a></button>
+</div>
+{% endblock %}
+
+{% block content %}
+<table class="home-table">
+        <tr>
+            <td>
+            <a href="{% url 'create' %}"style="color:white;text-decoration:none;"><button class="home-button">Plan a Trip</button></a>
+            </td>
+    </tr>
+    <tr>
+        <td>
+        <a href="{% url 'profile' request.user.id %}"style="color:white;text-decoration:none;"><button class="home-button">
+            View My Trips
+        </button></a>
+        </td>
+    </tr>
+</table>
+<div class='container'>
+    <img src="/media/car.png" style="width:100px;height:100px;position: relative;"/> 
+    <div class='line'></div>
+</div>
+{% endblock %}

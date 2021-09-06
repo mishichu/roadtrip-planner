@@ -1,0 +1,158 @@
+{% extends "base2.html" %}
+
+{% block user-info %}
+<div> Hi, {{request.user.first_name}}!
+    <button><a href="{% url '' %}" style="color:white;text-decoration:none;">home</a></button>
+    <button><a href="{% url 'friends' %}" style="color:white;text-decoration:none;">find friends</a></button>
+    <button><a href="{% url 'profile' request.user.id %}" style="color:white;text-decoration:none;">my profile</a></button>
+    <button><a href="{% url 'logout'%}" style="color:white;text-decoration:none;">logout</a></button>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if message %}
+{% else %} 
+<center>
+<h1 id="id_page_name" style="font-family:'Amatic SC'">{{viewing.user.first_name}} {{viewing.user.last_name}}'s profile {% if viewing.city %}({{viewing.city}}){% endif %}</h1>
+</center>
+<table>
+<tr>
+<td>
+{% if viewing.user_picture %}
+	<center>
+	{% load static %}<img src="{{MEDIA_URL}}{{viewing.user_picture.url }}" id="id_user_picture" style="border-radius: 50%;width:10em;height:10em;"/><br/><br/>
+	</center>
+{% else %}
+{% endif %}
+
+{% if viewing.user.id == user.id %}
+	<div style="text-align:left"> 
+	<form method="post" enctype="multipart/form-data">{% csrf_token %}
+	    user bio: <input id="id_bio_input_text" type="textarea" class="" name="bio_input_text" value="{{viewing.user_bio}}">
+ 	   <br />
+ 	   profile picture: <input id="id_profile_picture" type="file" accept="image/*" class="" name="profile_picture">
+	    </p>
+	    <center>
+		<button type="submit" id="id_update_profile_button" name="update_profile_button">submit</button>
+	    </center>
+	</form>
+{% else %}
+	<input type="textarea" readonly id = "id_user_bio" name="user_bio" value="{{viewing.user_bio}}"/><br/>
+	<form method="get">{% csrf_token %}
+	<center>
+	{% if is_following %}
+	<button id="id_unfollow" name="unfollow" style="background-color:#eb6a83;">unfollow</button><br/>
+	{% else %}
+	<button name="follow" id="id_follow">follow</button><br/>
+	{% endif %}
+	</center>
+	</form>
+{% endif %}
+</td>
+
+<td>
+<div class="friends-note">
+<table >
+<tr>
+<td style="border-right: 3px solid white;">
+<h2 style="font-family:'Amatic SC'">Following: </h2>
+<div style="overflow: scroll;height:12em;">
+<ul>
+{% for person in following %}
+<li style="list-style-type: none;"><a href="{% url 'profile' person.id %}" id="id_profile_link_{{person.user.username}}"> {% load static %}<img src="{{MEDIA_URL}}{{person.user_picture.url }}" id="id_user_picture" style="border-radius: 50%;width:2em;height:2em;"/></a>
+{{person.user.first_name}} {{person.user.last_name}}  {% if person in followed_by %} <span style="font-family:'Amatic SC'">(friend) </span> {% endif %} </li>
+{% endfor %}
+</ul>
+</div>
+</td>
+<td style="overflow: auto;">
+<h2 style="font-family:'Amatic SC'">Followers: </h2>
+<div style="overflow: scroll;height:12em;"><ul>
+{% for person in followed_by %}
+<li style="list-style-type: none;"><a href="{% url 'profile' person.id %}" id="id_profile_link_{{person.user.username}}"> {% load static %}<img src="{{MEDIA_URL}}{{person.user_picture.url }}" id="id_user_picture" style="border-radius: 50%;width:2em;height:2em;"/></a>
+{{person.user.first_name}} {{person.user.last_name}} {% if person in following %} <span style="font-family:'Amatic SC'">(friend) </span> {% endif %} </li>
+{% endfor %}
+</ul></div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+
+
+
+{% if request.user == viewing.user %}
+<h2 style="font-family:'Amatic SC'">My trips: 
+	<button><a href="{% url 'create' %}" style="text-decoration: none;color:white;">Plan a Trip</a></button>
+</h2>	
+<h4>Unpublished</h4>
+	<table class="home-table">
+		{% for trip in user_trips %}
+			{% if not trip.published %}
+			<tr class="roadtrip-div">
+				<td>
+					{{trip.title}}
+				 <a class="small-text" href="{% url 'edit' trip.id %}">Edit</a>
+				</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+<h4>Published</h4>
+	<table class="home-table">
+		{% for trip in user_trips %}
+			{% if trip.published %}
+			<tr class="roadtrip-div">
+				<td>
+					{{trip.title}}
+				<a class="small-text" href="{% url 'view-trip' trip.id %}">View</a> <a class="small-text" href="{% url 'edit' trip.id %}">Edit</a>
+				</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+
+<h2 style="font-family:'Amatic SC'">Trips I've been invited to: 
+</h2>	
+	<table class="home-table">
+	{% for trip in friend_trips %}
+			{% if trip.published %}
+			<tr class="roadtrip-div">
+				<td>
+					{{trip.title}}
+				<a class="small-text" href="{% url 'view-trip' trip.id %}">View</a>
+				<br>
+				<p class="small-text">Authored by <a href="{% url 'profile' trip.created_by.id %}">{{trip.created_by.first_name}} {{trip.created_by.last_name}} </a> </p>
+				</td>
+			</tr>
+			{% endif %}
+	{% endfor %}
+	</table>
+
+
+{% else %}
+<h2 style="font-family:'Amatic SC'">{{viewing.user.first_name}}'s trips: 
+</h2>
+	{% if is_following %}
+	<table class="home-table">
+	{% for trip in user_trips %}
+			{% if trip.published %}
+			<tr class="roadtrip-div">
+				<td>
+					{{trip.title}}
+				<a class="small-text" href="{% url 'view-trip' trip.id %}">View</a>
+				</td>
+			</tr>
+			{% endif %}
+	{% endfor %}
+	</table>
+	{% else %}
+	<p style="font-family:'Amatic SC'">Follow {{viewing.user.first_name}} to view their trips! </p>
+	{% endif %}
+
+{% endif %}
+</div>
+{% endif %}
+{% endblock %}

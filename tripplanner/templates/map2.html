@@ -1,0 +1,113 @@
+{% extends "base_map.html" %}
+
+{% block user-info %}
+{% load static %}
+    <script src="{% static 'maps2.js' %}" type="text/javascript"></script>
+<div> Hi, {{request.user.first_name}}!
+    <button><a href="{% url '' %}" style="color:white;text-decoration:none;">home</a></button>
+    <button><a href="{% url 'friends' %}" style="color:white;text-decoration:none;">find friends</a></button>
+    <button><a href="{% url 'profile' request.user.id %}" style="color:white;text-decoration:none;">my profile</a></button>
+    <button><a href="{% url 'logout'%}" style="color:white;text-decoration:none;">logout</a></button>
+</div>
+{% endblock %}
+
+
+
+        {% block wizard %}
+        <div class="button-wrp"> 
+        	<form method="GET" action="{% url 'edit' trip.id %}">
+        		<button class="next-button" >Go Back</button>
+            		{% csrf_token %}
+      		</form>
+		<form class="button-wrp" method="POST" action="{% url 'next-invite-friends' trip.id %}">
+                	{% csrf_token %}
+                	<button class="next-button">Next: Invite Friends</button>
+            	</form>
+        </div>
+        <div class="validation-error">
+            {% for error in form.non_field_errors %}
+            <p class="errorlist">
+                {{ error }}
+            </p>
+            {% endfor %}
+        </div>
+        <div class="planner-wrp">
+            <div class="planner">
+                <form method="POST" id="post-waypoints" action="{% url 'add-stops' %}">
+                    {% csrf_token %}
+                <table class="planner-table">
+                {% for field in form.visible_fields %}
+                {% if field.auto_id == 'id_address' %}
+                <tr>
+                    <td>{{field.label_tag}} {{field}} 
+                    <button id="id_add_new_stop_button" type="button" onclick="addStopForm()">clear all</button>
+		    </td>							
+                    <td class="error">
+                        {% for error in field.errors %} {{error}} {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr> <td>
+                    
+                <table class="marker-note">
+                {% for field in form.visible_fields %}
+                    {% if field.auto_id != 'id_address' %}
+                <tr>
+                    <td>{{field.label_tag}} {{field}}
+                    </td>
+                    <td class="error">
+                        {% for error in field.errors %} {{error}} {% endfor %}
+                    </td>
+                </tr>
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <td>
+                        <button id="submit_button" type="submit">Add to Map</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+                <input type="hidden" id="id_starting_from" value="{{trip.starting_from}}">
+                <input type="hidden" id="id_ending_at" value="{{trip.ending_at}}">
+                <input type="hidden" id="trip_id" name='trip_id' value="{{trip.id}}">
+                
+
+    </table>
+            </form>
+                <script type="text/javascript">
+                    var inputs = ['id_address']
+                    var stops = {{waypoints|safe }};
+
+                    var frm = $('#post-waypoints');
+                    frm.submit(function () {
+                        $.ajax({
+                            type: frm.attr('method'),
+                            url: frm.attr('action'),
+                            data: frm.serialize(),
+                            success: function (response) {
+                                $("#error").html("");
+                                if(response['type'] == 'add')
+                                    searchLoc('id_address', frm[0].reset.bind(frm[0]), response);
+                                else{
+                                    editWaypoint(response);
+                                }  
+                            },
+                            error: updateError
+                        });
+                        return false;
+                    });
+                </script>
+            </div>
+            <div id="map">
+
+            </div>
+        </div>
+        {% endblock %}
+           
+    
+
+
+    

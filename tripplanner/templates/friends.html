@@ -1,0 +1,81 @@
+{% extends "base2.html" %}
+
+
+{% block user-info %}
+<style>
+    .container {
+        position: relative;
+        text-align: right; 
+        position: absolute;
+        bottom: 0px;
+        right: 10px;
+        width: 100%;
+    }
+    
+    .line {
+        border-top: 3px dashed #039687;
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        z-index: -2;  
+    }
+    </style>
+
+
+<div> Hi, {{request.user.first_name}}!
+    <button><a href="{% url '' %}" style="color:white;text-decoration:none;">home</a></button>
+    <button><a href="{% url 'friends' %}" style="color:white;text-decoration:none;">find friends</a></button>
+    <button><a href="{% url 'profile' request.user.id %}" style="color:white;text-decoration:none;">my profile</a></button>
+    <button><a href="{% url 'logout'%}" style="color:white;text-decoration:none;">logout</a></button>
+</div>
+{% endblock %}
+
+{% block content %}
+<h1 id="id_page_name" style="font-family:'Amatic SC'">Find Friends</h1>
+<form method="post" >{% csrf_token %}
+    <span style="font-family:'Amatic SC'">Search: </span>
+    <input id="search_text" type="text" class="" name="search_text">
+    <button type="submit" id="id_search_text_button" name="search_text_button">&#128269; </button><br/>
+</form>
+{% if search_text %}
+</br>
+{% if results %}
+
+
+<span style="font-family:'Amatic SC'">Search results for "{{search_text}}" </span>
+<ul>
+{% for person in results %}
+<li style="list-style-type: none;">
+<table>
+<tr>
+<td><a href="{% url 'profile' person.id %}" id="id_profile_link_{{person.user.username}}"> {% load static %}<img src="{{MEDIA_URL}}{{person.user_picture.url }}" id="id_user_picture" style="border-radius: 50%;width:64px;height:64px;"/> </a> </td>
+<td>{{person.user.first_name}} {{person.user.last_name}} </td>
+<td>
+<form method="get">
+<input type="hidden" id="id_search_text" name="search_text" value="{{search_text}}">
+{% if person.user in following %}
+	<button id="id_unfollow_{{person.id}}" name="unfollow_{{person.id}}" style="background-color:#eb6a83;">unfollow</button><br/>
+{% else %}
+	{% if person.user != request.user %}
+	<button name="follow_{{person.id}}" id="id_follow_{{person.id}}">follow</button><br/>
+	{% else %}
+	{% endif %}
+{% endif %} 
+</form>
+</td>
+</tr>
+</table>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<span style="font-family:'Amatic SC'">No results for "{{search_text}}" </span>
+{% endif %}
+{% endif %}
+
+<div class='container'>
+    <img src="/media/car.png" style="width:100px;height:100px;position: relative;"/> 
+    <div class='line'></div>
+</div>
+
+{% endblock %}
